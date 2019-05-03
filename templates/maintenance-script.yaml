@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-maintenance-script
+  labels:
+    helm.sh/chart: {{ include "vault.chart" . }}
+    app.kubernetes.io/name: {{ include "vault.name" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  maintenance.sh: |
+    #!bin/sh
+
+    init_status() {
+      status=$(curl http://localhost:8200/v1/sys/health | jq .initialized)
+      [[ "${status}" == "true" ]] && return 0 || return 1
+    }
+
+    sealed_status() {
+      status=$(curl http://localhost:8200/v1/sys/health | jq .sealed)
+      [[ "${status}" == "true" ]] && return 0 || return 1
+    }
+
+    init_vault() {
+      secrets=$(mktemp)
+      trap "rm -rf ${secrets}" EXIT
+
+      init_results=$(vault operator init | grep ':' > "${secrets}")
+      keys=$(cat "${secrets}" | grep "^Unseal Key" | awk "{print \$4}")
+      root_token=$(cat "${secrets}" | grep "^Initial Root Token:" | awk "{print \$4}")
+
+      key_count=1
+      for key in $keys
+      do
+        vault operator unseal $key
+        kubectl -n {{ .Release.Namespace }} create secret generic key${key_count} --from-literal=key${key_count}=$key
+        key_count=$((key_count+1))
+      done
+    }
+
+    unseal_vault() {
+      key_count=1
+      for key in $(seq 1 5)
+      do
+        vault operator unseal $(kubectl get secret key${key_count} -o json | jq .data.key${key_count} | base64 -d)
+        key_count=$((key_count+1))
+      done
+    }

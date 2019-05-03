@@ -12,7 +12,7 @@ subjects:
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ template "vault.fullname" . }}
+  name: {{ .Chart.Name }}
   apiGroup: rbac.authorization.k8s.io
 
 ---
@@ -34,3 +34,7 @@ rules:
   resources:
   - endpoints
   verbs: ["get"]
+- apiGroups: [""]
+  resources:
+  - secrets
+  verbs: ["get", "list", "watch", "create", "update"]

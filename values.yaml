@@ -7,6 +7,12 @@ vault:
   pullPolicy: IfNotPresent
   volumeSize: 5Gi
   persist: false
+  liveness:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  readiness:
+    initialDelaySeconds: 10
+    periodSeconds: 10
   config:
     listener:
       tcp:
@@ -18,3 +24,9 @@ vault:
     storage:
       file:
         path: "/keys"
+
+kubectl:
+  version: "1.14.0"
+
+jq:
+  version: "1.6"
