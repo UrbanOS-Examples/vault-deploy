@@ -37,6 +37,13 @@ data:
         kubectl -n {{ .Release.Namespace }} create secret generic key${key_count} --from-literal=key${key_count}=$key
         key_count=$((key_count+1))
       done
+
+      write_access_policies
+
+      enable_ldap
+
+      vault token revoke ${root_token}
+      exit 0
     }
 
     unseal_vault() {
@@ -64,3 +71,26 @@ data:
         exit 0
       fi
     }
+
+    write_access_policies() {
+      vault policy write admin /vault/config/admin_policy.hcl
+      vault policy write application /vault/config/app_policy.hcl
+    }
+
+    enable_ldap() {
+      vault auth enable ldap
+
+      vault write auth/ldap/config \
+        url="ldaps://{{ .Values.ldap.server }}" \
+        binddn="{{ .Values.ldap.binduser }},{{ .Values.ldap.userdn }},{{ .Values.ldap.basedn }}" \
+        bindpass="{{ .Values.ldap.bindpass }}" \
+        userdn="{{ .Values.ldap.userdn }},{{ .Values.ldap.basedn }}" \
+        userattr="{{ .Values.ldap.userattr }}" \
+        groupdn="{{ .Values.ldap.groupdn }},{{ .Values.ldap.basedn }}" \
+        groupattr="{{ .Values.ldap.groupattr }}" \
+        starttls={{ .Values.ldap.start_tls }} \
+        insecure_tls={{ .Values.ldap.insecure_tls }}
+
+      vault write auth/ldap/groups/admin policies=admin
+    }
+

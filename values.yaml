@@ -25,6 +25,18 @@ vault:
       file:
         path: "/keys"
 
+ldap:
+  server: ldap.external-services
+  basedn: cn=accounts,dc=internal,dc=smartcolumbusos,dc=com
+  userdn: cn=users
+  groupdn: cn=groups
+  binduser: uid=binduser
+  bindpass: w4ruq2Cki0b9uihNM5cRqe9vEx0Ndk0AUPRajmws
+  userattr: uid
+  groupattr: groupOfName
+  start_tls: true
+  insecure_tls: true
+
 kubectl:
   version: "1.14.0"
 

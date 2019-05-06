@@ -39,7 +39,7 @@ spec:
         {{- if .Values.vault.devMode }}
         command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
         {{- else }}
-        command: ["vault", "server", "-config", "/vault/config/config.json"]
+        command: ["vault", "server", "-config", "/vault/config/server_config.json"]
         {{- end }}
         image: {{ .Values.vault.repository }}:{{ .Values.vault.tag }}
         imagePullPolicy: {{ .Values.vault.pullPolicy }}
@@ -76,12 +76,15 @@ spec:
         volumeMounts:
         - name: key-store
           mountPath: /keys
-        - name: config 
-          mountPath: /vault/config/config.json
-          subPath: config.json
-        - name: config
-          mountPath: /vault/config/secrets.hcl
-          subPath: secrets.hcl
+        - name: configs 
+          mountPath: /vault/config/server_config.json
+          subPath: server_config.json
+        - name: configs
+          mountPath: /vault/config/admin_policy.hcl
+          subPath: admin_policy.hcl
+        - name: configs
+          mountPath: /vault/config/app_policy.hcl
+          subPath: app_policy.hcl
         - name: maintenance-script
           mountPath: /usr/local/bin/maintenance.sh
           subPath: maintenance.sh
@@ -90,7 +93,7 @@ spec:
             add:
             - IPC_LOCK
       volumes:
-      - name: config
+      - name: configs
         configMap:
           name: {{ .Chart.Name }}
       - name: maintenance-script
