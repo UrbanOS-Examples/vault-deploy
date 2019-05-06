@@ -11,11 +11,13 @@ data:
     #!bin/sh
 
     init_status() {
+      local status
       status=$(curl http://localhost:8200/v1/sys/health | jq .initialized)
       [[ "${status}" == "true" ]] && return 0 || return 1
     }
 
     sealed_status() {
+      local status
       status=$(curl http://localhost:8200/v1/sys/health | jq .sealed)
       [[ "${status}" == "true" ]] && return 0 || return 1
     }
@@ -44,4 +46,21 @@ data:
         vault operator unseal $(kubectl get secret key${key_count} -o json | jq .data.key${key_count} | base64 -d)
         key_count=$((key_count+1))
       done
+    }
+
+    init_and_unseal() {
+      if init_status; then
+        if sealed_status; then
+          echo "Unsealing the vault"
+          unseal_vault
+          exit 0
+        else
+          echo "Vault already unsealed; no-op"
+          exit 0
+        fi
+      else
+        echo "Initializing the vault"
+        init_vault
+        exit 0
+      fi
     }

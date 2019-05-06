@@ -33,7 +33,9 @@ spec:
               - "apk add curl && \
                 curl -L https://storage.googleapis.com/kubernetes-release/release/v{{ .Values.kubectl.version }}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
                 curl -L https://github.com/stedolan/jq/releases/download/jq-{{ .Values.jq.version }}/jq-linux64 -o /usr/local/bin/jq && \
-                chmod +x /usr/local/bin/kubectl /usr/local/bin/jq"
+                chmod +x /usr/local/bin/kubectl /usr/local/bin/jq && \
+                source /usr/local/bin/maintenance.sh && \
+                init_and_unseal"
         {{- if .Values.vault.devMode }}
         command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
         {{- else }}
@@ -80,6 +82,9 @@ spec:
         - name: config
           mountPath: /vault/config/secrets.hcl
           subPath: secrets.hcl
+        - name: maintenance-script
+          mountPath: /usr/local/bin/maintenance.sh
+          subPath: maintenance.sh
         securityContext:
           capabilities:
             add:
@@ -88,11 +93,13 @@ spec:
       - name: config
         configMap:
           name: {{ .Chart.Name }}
+      - name: maintenance-script
+        configMap:
+          name: {{ .Chart.Name }}-maintenance-script
       - name: key-store
 {{- if .Values.vault.persist }}
         persistentVolumeClaim:
           claimName: {{ .Chart.Name }}
 {{- else }}
-        hostPath:
-          path: /tmp/vault-data
+        emptyDir: {}
 {{- end }}
