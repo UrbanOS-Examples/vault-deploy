@@ -40,7 +40,7 @@ data:
 
       vault login ${root_token}
 
-      vault secrets enable -path={{ .Values.secretsPath }} -version=1 kv
+      vault secrets enable -path={{ .Values.vault.secretsPath }} kv
 
       write_access_policies
 
