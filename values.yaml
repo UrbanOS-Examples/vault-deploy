@@ -7,6 +7,7 @@ vault:
   pullPolicy: IfNotPresent
   volumeSize: 5Gi
   persist: false
+  secretsPath: secrets/smart_city
   liveness:
     initialDelaySeconds: 30
     periodSeconds: 10
@@ -26,14 +27,14 @@ vault:
         path: "/keys"
 
 ldap:
-  server: ldap.external-services
+  server: iam-master.alm.internal.smartcolumbusos.com
   basedn: cn=accounts,dc=internal,dc=smartcolumbusos,dc=com
   userdn: cn=users
   groupdn: cn=groups
   binduser: uid=binduser
   bindpass: w4ruq2Cki0b9uihNM5cRqe9vEx0Ndk0AUPRajmws
   userattr: uid
-  groupattr: groupOfName
+  groupattr: cn
   start_tls: true
   insecure_tls: true
 

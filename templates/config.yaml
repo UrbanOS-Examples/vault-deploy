@@ -16,9 +16,6 @@ data:
     }
 
   app_policy.hcl: |
-    path "secret/smart_city/*" {
+    path "secrets/smart_city/*" {
       capabilities = ["create", "read", "update", "list"]
     }
-
-  ldap_config.hcl: |
-    

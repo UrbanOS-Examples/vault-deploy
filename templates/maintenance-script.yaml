@@ -38,6 +38,10 @@ data:
         key_count=$((key_count+1))
       done
 
+      vault login ${root_token}
+
+      vault secrets enable -path={{ .Values.secretsPath }} -version=1 kv
+
       write_access_policies
 
       enable_ldap
@@ -81,7 +85,7 @@ data:
       vault auth enable ldap
 
       vault write auth/ldap/config \
-        url="ldaps://{{ .Values.ldap.server }}" \
+        url="ldaps://{{ .Values.ldap.server }}:636" \
         binddn="{{ .Values.ldap.binduser }},{{ .Values.ldap.userdn }},{{ .Values.ldap.basedn }}" \
         bindpass="{{ .Values.ldap.bindpass }}" \
         userdn="{{ .Values.ldap.userdn }},{{ .Values.ldap.basedn }}" \
@@ -92,5 +96,6 @@ data:
         insecure_tls={{ .Values.ldap.insecure_tls }}
 
       vault write auth/ldap/groups/admin policies=admin
+      vault write auth/ldap/groups/applications policies=application
     }
 
