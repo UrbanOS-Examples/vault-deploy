@@ -7,26 +7,15 @@ metadata:
     app.kubernetes.io/name: {{ include "vault.name" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-  config.json: |
+  server_config.json: |
     {{ .Values.vault.config | toJson }}
 
-  secrets.hcl: |
-    path "sys/mounts/kv-v2" {
-      capabilities = ["update"]
+  admin_policy.hcl: |
+    path "*" {
+      capabilities = ["create", "read", "update", "delete", "list", "sudo"]
     }
 
-    path "sys/mounts" {
-      capabilities = ["read"]
-    }
-
-    path "kv-v1/*" {
-      capabilities = ["create", "read", "update", "delete", "list"]
-    }
-
-    path "sys/policies/acl/*" {
-      capabilities = ["create", "read", "update", "delete", "list"]
-    }
-
-    path "auth/token/create" {
-      capabilities = ["create", "update", "sudo"]
+  app_policy.hcl: |
+    path "secrets/smart_city/*" {
+      capabilities = ["create", "read", "update", "list"]
     }

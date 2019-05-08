@@ -33,11 +33,13 @@ spec:
               - "apk add curl && \
                 curl -L https://storage.googleapis.com/kubernetes-release/release/v{{ .Values.kubectl.version }}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
                 curl -L https://github.com/stedolan/jq/releases/download/jq-{{ .Values.jq.version }}/jq-linux64 -o /usr/local/bin/jq && \
-                chmod +x /usr/local/bin/kubectl /usr/local/bin/jq"
+                chmod +x /usr/local/bin/kubectl /usr/local/bin/jq && \
+                source /usr/local/bin/maintenance.sh && \
+                init_and_unseal"
         {{- if .Values.vault.devMode }}
         command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
         {{- else }}
-        command: ["vault", "server", "-config", "/vault/config/config.json"]
+        command: ["vault", "server", "-config", "/vault/config/server_config.json"]
         {{- end }}
         image: {{ .Values.vault.repository }}:{{ .Values.vault.tag }}
         imagePullPolicy: {{ .Values.vault.pullPolicy }}
@@ -74,25 +76,33 @@ spec:
         volumeMounts:
         - name: key-store
           mountPath: /keys
-        - name: config 
-          mountPath: /vault/config/config.json
-          subPath: config.json
-        - name: config
-          mountPath: /vault/config/secrets.hcl
-          subPath: secrets.hcl
+        - name: configs 
+          mountPath: /vault/config/server_config.json
+          subPath: server_config.json
+        - name: configs
+          mountPath: /vault/config/admin_policy.hcl
+          subPath: admin_policy.hcl
+        - name: configs
+          mountPath: /vault/config/app_policy.hcl
+          subPath: app_policy.hcl
+        - name: maintenance-script
+          mountPath: /usr/local/bin/maintenance.sh
+          subPath: maintenance.sh
         securityContext:
           capabilities:
             add:
             - IPC_LOCK
       volumes:
-      - name: config
+      - name: configs
         configMap:
           name: {{ .Chart.Name }}
+      - name: maintenance-script
+        configMap:
+          name: {{ .Chart.Name }}-maintenance-script
       - name: key-store
 {{- if .Values.vault.persist }}
         persistentVolumeClaim:
           claimName: {{ .Chart.Name }}
 {{- else }}
-        hostPath:
-          path: /tmp/vault-data
+        emptyDir: {}
 {{- end }}
