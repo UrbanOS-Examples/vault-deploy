@@ -112,5 +112,5 @@ data:
         bound_service_account_names={{ .Values.kubernetes.boundServiceAccounts }} \
         bound_service_account_namespaces={{ .Values.kubernetes.boundServiceAccountNamespaces }} \
         policies=application \
-        ttl=2m
+        ttl={{ .Values.kubernetes.tokenTtl }}
     }
