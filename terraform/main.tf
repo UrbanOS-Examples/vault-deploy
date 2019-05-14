@@ -69,6 +69,11 @@ ldap:
   groupattr: cn
   start_tls: true
   insecure_tls: true
+
+kubernetes:
+  boundServiceAccounts: reaper,andi
+  boundServiceAccountNamespaces: streaming-services,admin
+  tokenTtl: 2m
 EOF
 }
 
