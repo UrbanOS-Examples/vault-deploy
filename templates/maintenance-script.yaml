@@ -46,6 +46,8 @@ data:
 
       enable_ldap
 
+      enable_kubernetes
+
       vault token revoke ${root_token}
       exit 0
     }
@@ -54,7 +56,7 @@ data:
       key_count=1
       for key in $(seq 1 5)
       do
-        vault operator unseal $(kubectl get secret key${key_count} -o json | jq .data.key${key_count} | base64 -d)
+        vault operator unseal $(kubectl get secret key${key_count} -o jsonpath="{.data.key${key_count}}" | base64 -d)
         key_count=$((key_count+1))
       done
     }
@@ -96,6 +98,19 @@ data:
         insecure_tls={{ .Values.ldap.insecure_tls }}
 
       vault write auth/ldap/groups/admin policies=admin
-      vault write auth/ldap/groups/applications policies=application
     }
 
+    enable_kubernetes() {
+      vault auth enable kubernetes
+
+      vault write auth/kubernetes/config \
+        kubernetes_host=https://kubernetes.default.svc.cluster.local:443 \
+        kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+        token_reviewer_jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
+      vault write auth/kubernetes/role/app-role \
+        bound_service_account_names={{ .Values.kubernetes.boundServiceAccounts }} \
+        bound_service_account_namespaces={{ .Values.kubernetes.boundServiceAccountNamespaces }} \
+        policies=application \
+        ttl=2m
+    }
