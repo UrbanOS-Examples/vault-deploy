@@ -18,6 +18,6 @@ data:
   {{ range .Values.vault.policies }}
   {{ .name }}_policy.hcl: |
     path "{{ .path }}" {
-      capabilities = ["create", "read", "update", "list"]
+      capabilities = ["read", "list"]
     }
   {{ end }}
