@@ -76,7 +76,7 @@ spec:
         volumeMounts:
         - name: key-store
           mountPath: /keys
-        - name: configs 
+        - name: configs
           mountPath: /vault/config/server_config.json
           subPath: server_config.json
         - name: configs
@@ -85,6 +85,9 @@ spec:
         - name: configs
           mountPath: /vault/config/app_policy.hcl
           subPath: app_policy.hcl
+        - name: configs
+          mountPath: /vault/config/s3_read_policy.hcl
+          subPath: s3_read_policy.hcl
         - name: maintenance-script
           mountPath: /usr/local/bin/maintenance.sh
           subPath: maintenance.sh
