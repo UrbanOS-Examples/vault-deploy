@@ -81,6 +81,7 @@ data:
     write_access_policies() {
       vault policy write admin /vault/config/admin_policy.hcl
       vault policy write application /vault/config/app_policy.hcl
+      vault policy write s3_read /vault/config/s3_read_policy.hcl
     }
 
     enable_ldap() {
@@ -112,5 +113,11 @@ data:
         bound_service_account_names={{ .Values.kubernetes.boundServiceAccounts }} \
         bound_service_account_namespaces={{ .Values.kubernetes.boundServiceAccountNamespaces }} \
         policies=application \
+        ttl={{ .Values.kubernetes.tokenTtl }}
+
+      vault write auth/kubernetes/role/discovery-role \
+        bound_service_account_names=discovery-api \
+        bound_service_account_namespaces=discovery \
+        policies=s3_read \
         ttl={{ .Values.kubernetes.tokenTtl }}
     }

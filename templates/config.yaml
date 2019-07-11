@@ -16,6 +16,11 @@ data:
     }
 
   app_policy.hcl: |
-    path "secrets/smart_city/*" {
+    path "secrets/smart_city/ingest/*" {
+      capabilities = ["create", "read", "update", "list"]
+    }
+
+  s3_read_policy.hcl: |
+    path "secrets/smart_city/host_access/read" {
       capabilities = ["create", "read", "update", "list"]
     }
