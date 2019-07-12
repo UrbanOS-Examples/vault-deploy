@@ -15,7 +15,9 @@ data:
       capabilities = ["create", "read", "update", "delete", "list", "sudo"]
     }
 
-  app_policy.hcl: |
-    path "secrets/smart_city/*" {
-      capabilities = ["create", "read", "update", "list"]
+  {{ range .Values.vault.policies }}
+  {{ .name }}_policy.hcl: |
+    path "{{ .path }}" {
+      capabilities = ["read", "list"]
     }
+  {{ end }}

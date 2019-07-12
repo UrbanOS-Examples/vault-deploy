@@ -80,7 +80,10 @@ data:
 
     write_access_policies() {
       vault policy write admin /vault/config/admin_policy.hcl
-      vault policy write application /vault/config/app_policy.hcl
+
+      {{ range .Values.vault.policies }}
+      vault policy write {{ .name }} /vault/config/{{ .name }}_policy.hcl
+      {{ end }}
     }
 
     enable_ldap() {
@@ -108,9 +111,11 @@ data:
         kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
         token_reviewer_jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 
-      vault write auth/kubernetes/role/app-role \
-        bound_service_account_names={{ .Values.kubernetes.boundServiceAccounts }} \
-        bound_service_account_namespaces={{ .Values.kubernetes.boundServiceAccountNamespaces }} \
-        policies=application \
-        ttl={{ .Values.kubernetes.tokenTtl }}
+      {{ range .Values.vault.roles }}
+      vault write auth/kubernetes/role/{{ .name }} \
+        bound_service_account_names={{ .boundServiceAccounts }} \
+        bound_service_account_namespaces={{ .boundServiceAccountNamespaces }} \
+        policies={{ .policies }} \
+        ttl={{ .tokenTtl }}
+      {{ end }}
     }
