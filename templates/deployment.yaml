@@ -21,6 +21,8 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
     spec:
+      strategy:
+        type: Recreate
       serviceAccountName: {{ .Chart.Name }}
       containers:
       - name: {{ .Chart.Name }}
