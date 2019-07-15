@@ -26,28 +26,32 @@ vault:
       file:
         path: "/keys"
   roles:
-    - name: discovery-role
+    - name: discovery-api-role
       boundServiceAccounts: discovery-api
       boundServiceAccountNamespaces: discovery
-      policies: s3_read
+      policies: discovery_api_aws
       tokenTtl: 2m
-    - name: app-role
-      boundServiceAccounts: reaper,andi
-      boundServiceAccountNamespaces: streaming-services,admin
-      policies: application
+    - name: reaper-role
+      boundServiceAccounts: reaper
+      boundServiceAccountNamespaces: streaming-services
+      policies: reaper_aws,dataset_access_keys
       tokenTtl: 2m
+    - name: andi-role
+      boundServiceAccounts: andi
+      boundServiceAccountNamespaces: admin
+      policies: dataset_access_keys
+      tokenTtl: 2m
+
   policies:
-    - name: s3_read
-      path: secrets/smart_city/host_access/read
-    - name: application
+    - name: dataset_access_keys
       path: secrets/smart_city/ingestion/*
+    - name: reaper_aws
+      path: secrets/smart_city/aws_keys/reaper
+    - name: discovery_api_aws
+      path: secrets/smart_city/aws_keys/discovery_api
 
 kubectl:
   version: "1.14.0"
 
 jq:
   version: "1.6"
-
-ldap:
-  server: bob
-
