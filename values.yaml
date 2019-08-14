@@ -36,6 +36,10 @@ vault:
       boundServiceAccountNamespaces: streaming-services
       policies: reaper_aws,dataset_access_keys
       tokenTtl: 2m
+    - name: odo-role
+      boundServiceAccounts: odo
+      boundServiceAccountNamespaces: streaming-services
+      policies: odo_aws
     - name: andi-role
       boundServiceAccounts: andi
       boundServiceAccountNamespaces: admin
@@ -47,6 +51,8 @@ vault:
       path: secrets/smart_city/ingestion/*
     - name: reaper_aws
       path: secrets/smart_city/aws_keys/reaper
+    - name: odo_aws
+      path: secrets/smart_city/aws_keys/odo
     - name: discovery_api_aws
       path: secrets/smart_city/aws_keys/discovery_api
 
