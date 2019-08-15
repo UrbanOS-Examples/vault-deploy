@@ -1,6 +1,5 @@
-
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ .Chart.Name }}
   namespace: {{ .Release.Namespace }}
@@ -9,6 +8,9 @@ metadata:
     app.kubernetes.io/name: {{ include "vault.name" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  serviceName: {{ .Chart.Name }}
+  updateStrategy:
+    type: OnDelete
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "vault.name" . }}
@@ -19,13 +21,15 @@ spec:
         app.kubernetes.io/name: {{ include "vault.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
     spec:
-      strategy:
-        type: Recreate
+      terminationGracePeriodSeconds: 10
       serviceAccountName: {{ .Chart.Name }}
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: {{ .Chart.Name }}
+        securityContext:
+          privileged: true
         lifecycle:
           postStart:
             exec:
@@ -38,11 +42,13 @@ spec:
                 chmod +x /usr/local/bin/kubectl /usr/local/bin/jq && \
                 source /usr/local/bin/maintenance.sh && \
                 init_and_unseal"
-        {{- if .Values.vault.devMode }}
-        command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
-        {{- else }}
+          preStop:
+            exec:
+              command:
+              - "/bin/sh"
+              - "-c"
+              - "vault step-down"
         command: ["vault", "server", "-config", "/vault/config/server_config.json"]
-        {{- end }}
         image: {{ .Values.vault.repository }}:{{ .Values.vault.tag }}
         imagePullPolicy: {{ .Values.vault.pullPolicy }}
         ports:
@@ -65,6 +71,10 @@ spec:
             initialDelaySeconds: {{ .Values.vault.readiness.initialDelaySeconds }}
             periodSeconds: {{ .Values.vault.readiness.periodSeconds }}
         env:
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
         - name: POD_IP
           valueFrom:
             fieldRef:
@@ -104,9 +114,5 @@ spec:
         configMap:
           name: {{ .Chart.Name }}-maintenance-script
       - name: key-store
-{{- if .Values.vault.persist }}
         persistentVolumeClaim:
           claimName: {{ .Chart.Name }}
-{{- else }}
-        emptyDir: {}
-{{- end }}

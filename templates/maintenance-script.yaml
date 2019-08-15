@@ -56,7 +56,7 @@ data:
       key_count=1
       for key in $(seq 1 5)
       do
-        vault operator unseal $(kubectl get secret key${key_count} -o jsonpath="{.data.key${key_count}}" | base64 -d)
+        vault operator unseal $(kubectl -n {{ .Release.Namespace }} get secret key${key_count} -o jsonpath="{.data.key${key_count}}" | base64 -d)
         key_count=$((key_count+1))
       done
     }
