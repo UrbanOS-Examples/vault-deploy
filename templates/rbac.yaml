@@ -16,7 +16,6 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 
 ---
-
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -35,7 +34,6 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 
 ---
-
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -57,9 +55,9 @@ rules:
   resources:
   - secrets
   verbs: ["get", "list", "watch", "create", "update"]
-{{- if not .Values.vault.devMode -}}
----
 
+{{- if not .Values.vault.devMode }}
+---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -79,7 +77,6 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 
 ---
-
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:

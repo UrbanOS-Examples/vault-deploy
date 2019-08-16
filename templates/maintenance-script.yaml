@@ -111,7 +111,7 @@ data:
         kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
         token_reviewer_jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 
-      {{ range .Values.vault.roles }}
+      {{- range .Values.vault.roles }}
       vault write auth/kubernetes/role/{{ .name }} \
         bound_service_account_names={{ .boundServiceAccounts }} \
         bound_service_account_namespaces={{ .boundServiceAccountNamespaces }} \
