@@ -1,7 +1,8 @@
+{{- if not .Values.vault.devMode -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: upgrade-pod-cleaner
+  name: vault-upgrade-cleaner
   namespace: {{ .Release.Namespace }}
   labels:
     helm.sh/chart: {{ include "vault.chart" . }}
@@ -22,7 +23,7 @@ spec:
       serviceAccountName: {{ .Chart.Name }}
       restartPolicy: OnFailure
       containers:
-      - name: upgrade-pod-cleaner
+      - name: vault-upgrade-cleaner
         image: alpine
         imagePullPolicy: {{ .Values.vault.pullPolicy }}
         command:
@@ -32,3 +33,4 @@ spec:
           curl -L https://storage.googleapis.com/kubernetes-release/release/v{{ .Values.kubectl.version }}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
           chmod +x /usr/local/bin/kubectl && \
           kubectl -n {{ .Release.Namespace }} delete pod {{ .Chart.Name }}-0"
+{{- end -}}
