@@ -39,6 +39,7 @@ vault:
       boundServiceAccounts: odo
       boundServiceAccountNamespaces: streaming-services
       policies: odo_aws
+      tokenTtl: 2m
     - name: andi-role
       boundServiceAccounts: andi
       boundServiceAccountNamespaces: admin
