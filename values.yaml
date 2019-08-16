@@ -3,10 +3,9 @@ vault:
   port: 8200
   clusterPort: 8201
   repository: vault
-  tag: 1.1.2
+  tag: 1.2.1
   pullPolicy: IfNotPresent
   volumeSize: 5Gi
-  persist: false
   secretsPath: secrets/smart_city
   liveness:
     initialDelaySeconds: 30

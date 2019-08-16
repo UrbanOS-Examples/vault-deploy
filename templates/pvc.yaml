@@ -1,4 +1,4 @@
-{{- if .Values.vault.persist -}}
+{{- if not .Values.vault.devMode -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

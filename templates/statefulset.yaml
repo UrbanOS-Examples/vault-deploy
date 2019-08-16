@@ -1,6 +1,6 @@
-{{- if .Values.vault.devMode -}}
+{{- if not .Values.vault.devMode -}}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ .Chart.Name }}
   namespace: {{ .Release.Namespace }}
@@ -9,6 +9,9 @@ metadata:
     app.kubernetes.io/name: {{ include "vault.name" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  serviceName: {{ .Chart.Name }}
+  updateStrategy:
+    type: OnDelete
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "vault.name" . }}
@@ -19,13 +22,15 @@ spec:
         app.kubernetes.io/name: {{ include "vault.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
     spec:
-      strategy:
-        type: Recreate
+      terminationGracePeriodSeconds: 10
       serviceAccountName: {{ .Chart.Name }}
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: {{ .Chart.Name }}
+        securityContext:
+          privileged: true
         lifecycle:
           postStart:
             exec:
@@ -38,6 +43,12 @@ spec:
                 chmod +x /usr/local/bin/kubectl /usr/local/bin/jq && \
                 source /usr/local/bin/maintenance.sh && \
                 init_and_unseal"
+          preStop:
+            exec:
+              command:
+              - "/bin/sh"
+              - "-c"
+              - "vault step-down"
         command: ["vault", "server", "-config", "/vault/config/server_config.json"]
         image: {{ .Values.vault.repository }}:{{ .Values.vault.tag }}
         imagePullPolicy: {{ .Values.vault.pullPolicy }}
@@ -104,5 +115,6 @@ spec:
         configMap:
           name: {{ .Chart.Name }}-maintenance-script
       - name: key-store
-        emptyDir: {}
-{{- end }}
+        persistentVolumeClaim:
+          claimName: {{ .Chart.Name }}
+{{- end -}}
