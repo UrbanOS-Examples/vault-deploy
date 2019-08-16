@@ -6,7 +6,6 @@ vault:
   tag: 1.2.1
   pullPolicy: IfNotPresent
   volumeSize: 5Gi
-  persist: false
   secretsPath: secrets/smart_city
   liveness:
     initialDelaySeconds: 30
@@ -26,11 +25,6 @@ vault:
       file:
         path: "/keys"
   roles:
-    - name: rando-app-role
-      boundServiceAccounts: rando-app
-      boundServiceAccountNamespaces: streaming-services
-      policies: dataset_access_keys,rando_app_aws
-      tokenTtl: 2m
     - name: discovery-api-role
       boundServiceAccounts: discovery-api
       boundServiceAccountNamespaces: discovery
@@ -52,8 +46,6 @@ vault:
       tokenTtl: 2m
 
   policies:
-    - name: rando_app_aws
-      path: secrets/smart_city/aws_keys/rando_app
     - name: dataset_access_keys
       path: secrets/smart_city/ingestion/*
     - name: reaper_aws
