@@ -9,7 +9,7 @@ provider "aws" {
 
 provider "aws" {
   version = "1.39"
-  alias = "alm"
+  alias   = "alm"
   region  = "${var.alm_region}"
 
   assume_role {
@@ -47,8 +47,8 @@ resource "local_file" "kubeconfig" {
 }
 
 data "aws_secretsmanager_secret_version" "ldap_bind_password" {
-  provider   = "aws.alm"
-  secret_id  = "${data.terraform_remote_state.alm_remote_state.bind_user_password_secret_id}"
+  provider  = "aws.alm"
+  secret_id = "${data.terraform_remote_state.alm_remote_state.bind_user_password_secret_id}"
 }
 
 resource "local_file" "helm_vars" {
@@ -86,8 +86,12 @@ export KUBECONFIG=${local_file.kubeconfig.filename}
 
 export AWS_DEFAULT_REGION=us-east-2
 
-helm upgrade --install vault ../ --namespace vault \
-    --values ${local_file.helm_vars.filename}
+helm repo add scdp https://smartcitiesdata.github.io/charts
+helm repo update
+helm upgrade --install vault scdp/vault --namespace=vault \
+    --version ${var.chart_version} \
+    --values ${local_file.helm_vars.filename} \
+    --values ../vault.yaml
 EOF
   }
 
@@ -134,4 +138,9 @@ variable "state_bucket" {
 
 variable "environment" {
   description = "The environment to deploy kdp to"
+}
+
+variable "chart_version" {
+  description = "The version of the vault chart to deploy"
+  default     = "1.0.0"
 }
