@@ -91,7 +91,8 @@ helm repo update
 helm upgrade --install vault scdp/vault --namespace=vault \
     --version ${var.chart_version} \
     --values ${local_file.helm_vars.filename} \
-    --values ../vault.yaml
+    --values ../vault.yaml \
+    ${var.extra_helm_args}
 EOF
   }
 
@@ -136,8 +137,13 @@ variable "state_bucket" {
   default     = "scos-alm-terraform-state"
 }
 
+variable "extra_helm_args" {
+  description = "Helm options"
+  default     = ""
+}
+
 variable "environment" {
-  description = "The environment to deploy kdp to"
+  description = "The environment to deploy vault to"
 }
 
 variable "chart_version" {
