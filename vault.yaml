@@ -44,6 +44,11 @@ vault:
       boundServiceAccountNamespaces: admin
       policies: dataset_access_keys
       tokenTtl: 2m
+    - name: doim-role
+      boundServiceAccounts: doim
+      boundServiceAccountNamespaces: streaming-services
+      policies: doim_access
+      tokenTtl: 2m
 
   policies:
     - name: dataset_access_keys
@@ -54,6 +59,8 @@ vault:
       path: secrets/smart_city/aws_keys/odo
     - name: discovery_api_aws
       path: secrets/smart_city/aws_keys/discovery_api
+    - name: doim_access
+      path: secrets/smart_city/doim/*
 
 kubectl:
   version: "1.14.0"
