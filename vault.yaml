@@ -45,7 +45,7 @@ vault:
       policies: dataset_access_keys
       tokenTtl: 2m
     - name: doim-role
-      boundServiceAccounts: doim
+      boundServiceAccounts: doim-adapter
       boundServiceAccountNamespaces: streaming-services
       policies: doim_access
       tokenTtl: 2m
