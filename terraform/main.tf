@@ -142,10 +142,6 @@ variable "extra_helm_args" {
   default     = ""
 }
 
-variable "environment" {
-  description = "The environment to deploy vault to"
-}
-
 variable "chart_version" {
   description = "The version of the vault chart to deploy"
   default     = "1.0.0"
