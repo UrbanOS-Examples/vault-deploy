@@ -46,7 +46,7 @@ vault:
       tokenTtl: 2m
     - name: doim-role
       boundServiceAccounts: doim-adapter
-      boundServiceAccountNamespaces: streaming-services
+      boundServiceAccountNamespaces: doim
       policies: doim_access
       tokenTtl: 2m
 
