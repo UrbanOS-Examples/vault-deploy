@@ -49,6 +49,11 @@ vault:
       boundServiceAccountNamespaces: doim
       policies: doim_access
       tokenTtl: 2m
+    - name: parking-prediction-api-role
+      boundServiceAccounts: parking-prediction-api
+      boundServiceAccountNamespaces: predictive-parking
+      policies: parking_prediction_api_aws
+      tokenTtl: 2m
 
   policies:
     - name: dataset_access_keys
@@ -61,6 +66,8 @@ vault:
       path: secrets/smart_city/aws_keys/discovery_api
     - name: doim_access
       path: secrets/smart_city/doim/*
+    - name: parking_prediction_api_aws
+      path: secrets/smart_city/aws_keys/parking_prediction_api
 
 kubectl:
   version: "1.14.0"
