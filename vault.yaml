@@ -42,7 +42,7 @@ vault:
     - name: andi-role
       boundServiceAccounts: andi
       boundServiceAccountNamespaces: admin
-      policies: dataset_access_keys
+      policies: dataset_access_keys,andi_auth0
       tokenTtl: 2m
     - name: doim-role
       boundServiceAccounts: doim-adapter
@@ -75,6 +75,8 @@ vault:
       path: secrets/smart_city/aws_keys/parking_prediction_api
     - name: parking_prediction_train_aws
       path: secrets/smart_city/aws_keys/parking_prediction_train
+    - name: andi_auth0
+      path: secrets/smart_city/auth0/andi
 
 kubectl:
   version: "1.14.0"
