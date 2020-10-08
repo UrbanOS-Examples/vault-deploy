@@ -1,0 +1,22 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vault-pem
+  namespace: vault
+spec:
+  secretName: vault-pem
+  duration: 8760h
+  renewBefore: 360h
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - vault.vault.svc.cluster.local
+  - vault.vault
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
