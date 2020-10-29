@@ -86,6 +86,7 @@ export KUBECONFIG=${local_file.kubeconfig.filename}
 
 export AWS_DEFAULT_REGION=us-east-2
 
+helm init --client-only
 helm repo add scdp https://datastillery.github.io/charts
 helm repo update
 helm upgrade --install vault scdp/vault --namespace=vault \
