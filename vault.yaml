@@ -63,20 +63,31 @@ vault:
   policies:
     - name: dataset_access_keys
       path: secrets/smart_city/ingestion/*
+      capabilities: '["read", "list"]'
     - name: reaper_aws
       path: secrets/smart_city/aws_keys/reaper
+      capabilities: '["read", "list"]'
     - name: odo_aws
       path: secrets/smart_city/aws_keys/odo
+      capabilities: '["read", "list"]'
     - name: discovery_api_aws
       path: secrets/smart_city/aws_keys/discovery_api
+      capabilities: '["read", "list"]'
     - name: doim_access
       path: secrets/smart_city/doim/*
+      capabilities: '["read", "list"]'
     - name: parking_prediction_api_aws
       path: secrets/smart_city/aws_keys/parking_prediction_api
+      capabilities: '["read", "list"]'
     - name: parking_prediction_train_aws
       path: secrets/smart_city/aws_keys/parking_prediction_train
+      capabilities: '["read", "list"]'
     - name: andi_auth0
       path: secrets/smart_city/auth0/andi
+      capabilities: '["read", "list"]'
+    - name: andi_write_only
+      path: secrets/smart_city/ingestion/*
+      capabilities: '["create", "update"]'
 
 kubectl:
   version: "1.14.0"
