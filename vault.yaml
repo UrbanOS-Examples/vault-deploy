@@ -87,7 +87,7 @@ vault:
       capabilities: '["read", "list"]'
     - name: andi_write_only
       path: secrets/smart_city/ingestion/*
-      capabilities: '["create", "update"]'
+      capabilities: '["create", "update", "list"]'
 
 kubectl:
   version: "1.14.0"
