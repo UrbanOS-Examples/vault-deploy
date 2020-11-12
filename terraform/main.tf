@@ -145,5 +145,5 @@ variable "extra_helm_args" {
 
 variable "chart_version" {
   description = "The version of the vault chart to deploy"
-  default     = "1.0.0"
+  default     = "1.0.1"
 }
