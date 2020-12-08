@@ -42,7 +42,12 @@ vault:
     - name: andi-role
       boundServiceAccounts: andi
       boundServiceAccountNamespaces: admin
-      policies: dataset_access_keys,andi_auth0,andi_write_only
+      policies: andi_auth0,andi_write_only
+      tokenTtl: 2m
+    - name: andi-public-role
+      boundServiceAccounts: andi-public
+      boundServiceAccountNamespaces: admin
+      policies: andi_auth0
       tokenTtl: 2m
     - name: doim-role
       boundServiceAccounts: doim-adapter
