@@ -31,11 +31,11 @@ node ('infrastructure') {
         }
 
         doStageIfRelease('Deploy to Production') {
-            def promotionTag = 'prod'
+            def environment = 'prod'
 
-            deployTo(environment: 'prod')
+            deployTo(environment: environment)
 
-            scos.applyAndPushGitHubTag(promotionTag)
+            scos.applyAndPushGitHubTag(environment)
         }
     }
 }
