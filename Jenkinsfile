@@ -47,6 +47,7 @@ def deployTo(params = [:]) {
     if (environment == null) throw new IllegalArgumentException("environment must be specified")
 
     def terraform = scos.terraform(environment)
+    terraform.init()
     terraform.plan(terraform.defaultVarFile, extraVars)
     terraform.apply()
 }
