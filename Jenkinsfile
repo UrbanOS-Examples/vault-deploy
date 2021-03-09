@@ -41,16 +41,12 @@ node ('infrastructure') {
 }
 
 def deployTo(params = [:]) {
-    dir('terraform') {
-        def environment = params.get('environment')
-        if (environment == null) throw new IllegalArgumentException("environment must be specified")
-        def extraVars = [
-            'environment': environment
-        ]
+    def environment = params.get('environment')
+    def extraVars = params.get('extraVars', [:])
 
-        def terraform = scos.terraform(environment)
-        sh "terraform init && terraform workspace new ${environment}"
-        terraform.plan(terraform.defaultVarFile, extraVars)
-        terraform.apply()
-    }
+    if (environment == null) throw new IllegalArgumentException("environment must be specified")
+
+    def terraform = scos.terraform(environment)
+    terraform.plan(terraform.defaultVarFile, extraVars)
+    terraform.apply()
 }
