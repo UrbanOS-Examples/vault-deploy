@@ -23,19 +23,13 @@ node ('infrastructure') {
         }
 
         doStageIfPromoted('Deploy to Staging')  {
-            def environment = 'staging'
-
-            deployTo(environment: environment)
-
-            scos.applyAndPushGitHubTag(environment)
+            deployTo(environment: 'staging')
+            scos.applyAndPushGitHubTag('staging')
         }
 
         doStageIfRelease('Deploy to Production') {
-            def environment = 'prod'
-
-            deployTo(environment: environment)
-
-            scos.applyAndPushGitHubTag(environment)
+            deployTo(environment: 'prod')
+            scos.applyAndPushGitHubTag('prod')
         }
     }
 }
