@@ -93,7 +93,7 @@ helm repo update
 helm upgrade --install vault scdp/vault --namespace=vault \
     --version ${var.chart_version} \
     --values ${local_file.helm_vars.filename} \
-    --values ../vault.yaml \
+    --values vault.yaml \
     ${var.extra_helm_args}
 EOF
 
