@@ -1,5 +1,5 @@
 library(
-    identifier: 'pipeline-lib@4.5.0',
+    identifier: 'pipeline-lib@4.7.0',
     retriever: modernSCM([$class: 'GitSCMSource',
                           remote: 'https://github.com/SmartColumbusOS/pipeline-lib',
                           credentialsId: 'jenkins-github-user'])
@@ -23,34 +23,25 @@ node ('infrastructure') {
         }
 
         doStageIfPromoted('Deploy to Staging')  {
-            def environment = 'staging'
-
-            deployTo(environment: environment)
-
-            scos.applyAndPushGitHubTag(environment)
+            deployTo(environment: 'staging')
+            scos.applyAndPushGitHubTag('staging')
         }
 
         doStageIfRelease('Deploy to Production') {
-            def promotionTag = 'prod'
-
             deployTo(environment: 'prod')
-
-            scos.applyAndPushGitHubTag(promotionTag)
+            scos.applyAndPushGitHubTag('prod')
         }
     }
 }
 
 def deployTo(params = [:]) {
-    dir('terraform') {
-        def environment = params.get('environment')
-        if (environment == null) throw new IllegalArgumentException("environment must be specified")
-        def extraVars = [
-            'environment': environment
-        ]
+    def environment = params.get('environment')
+    def extraVars = params.get('extraVars', [:])
 
-        def terraform = scos.terraform(environment)
-        sh "terraform init && terraform workspace new ${environment}"
-        terraform.plan(terraform.defaultVarFile, extraVars)
-        terraform.apply()
-    }
+    if (environment == null) throw new IllegalArgumentException("environment must be specified")
+
+    def terraform = scos.terraform(environment)
+    terraform.init()
+    terraform.plan(terraform.defaultVarFile, extraVars)
+    terraform.apply()
 }
