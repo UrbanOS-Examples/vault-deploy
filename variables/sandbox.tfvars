@@ -3,3 +3,5 @@ os_role_arn = "arn:aws:iam::068920858268:role/admin_role"
 
 state_bucket = "scos-sandbox-terraform-state"
 alm_state_bucket = "scos-sandbox-terraform-state"
+
+ldap_basedn = "cn=accounts,dc=sandbox,dc=internal,dc=smartcolumbusos,dc=com"
