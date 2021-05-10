@@ -7,6 +7,8 @@ vault:
   pullPolicy: IfNotPresent
   volumeSize: 5Gi
   secretsPath: secrets/smart_city
+  certSecret: vault-pem
+  caCertSecret: ca-cert
   liveness:
     initialDelaySeconds: 30
     periodSeconds: 10
