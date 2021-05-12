@@ -87,7 +87,6 @@ export KUBECONFIG=${local_file.kubeconfig.filename}
 
 export AWS_DEFAULT_REGION=us-east-2
 
-helm init --client-only
 helm repo add scdp https://datastillery.github.io/charts
 helm repo update
 helm upgrade --install vault scdp/vault --namespace=vault \
@@ -147,6 +146,6 @@ variable "extra_helm_args" {
 
 variable "chart_version" {
   description = "The version of the vault chart to deploy"
-  default     = "1.0.1"
+  default     = "1.1.2"
 }
 
