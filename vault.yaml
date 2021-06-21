@@ -27,41 +27,41 @@ vault:
   roles:
     - name: discovery-api-role
       boundServiceAccounts: discovery-api
-      boundServiceAccountNamespaces: discovery
+      boundServiceAccountNamespaces: urban-os
       policies: discovery_api_aws
       tokenTtl: 2m
     - name: reaper-role
       boundServiceAccounts: reaper
-      boundServiceAccountNamespaces: streaming-services
+      boundServiceAccountNamespaces: urban-os
       policies: reaper_aws,dataset_access_keys
       tokenTtl: 2m
     - name: odo-role
       boundServiceAccounts: odo
-      boundServiceAccountNamespaces: streaming-services
+      boundServiceAccountNamespaces: urban-os
       policies: odo_aws
     - name: andi-role
       boundServiceAccounts: andi
-      boundServiceAccountNamespaces: admin
+      boundServiceAccountNamespaces: urban-os
       policies: andi_auth0,andi_write_only,andi_aws_keys
       tokenTtl: 2m
     - name: andi-public-role
       boundServiceAccounts: andi-public
-      boundServiceAccountNamespaces: admin
+      boundServiceAccountNamespaces: urban-os
       policies: andi_auth0,andi_aws_keys
       tokenTtl: 2m
     - name: doim-role
       boundServiceAccounts: doim-adapter
-      boundServiceAccountNamespaces: doim
+      boundServiceAccountNamespaces: urban-os
       policies: doim_access
       tokenTtl: 2m
     - name: parking-prediction-api-role
       boundServiceAccounts: parking-prediction-api
-      boundServiceAccountNamespaces: predictive-parking
+      boundServiceAccountNamespaces: urban-os
       policies: parking_prediction_api_aws
       tokenTtl: 2m
     - name: parking-prediction-train-role
       boundServiceAccounts: parking-prediction-train
-      boundServiceAccountNamespaces: predictive-parking
+      boundServiceAccountNamespaces: urban-os
       policies: parking_prediction_train_aws
       tokenTtl: 2m
 

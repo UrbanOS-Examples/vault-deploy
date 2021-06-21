@@ -59,8 +59,8 @@ vault:
   persist: true
 
 ldap:
-  server: ldap.external-services
-  basedn: cn=accounts,dc=internal,dc=smartcolumbusos,dc=com
+  server: ldap.urban-os
+  basedn: cn=accounts,dc=sandbox,dc=internal,dc=smartcolumbusos,dc=com
   userdn: cn=users
   groupdn: cn=groups
   binduser: uid=binduser
